@@ -1,0 +1,222 @@
+
+npm install -g @angular/cli
+
+
+
+step 1:-
+
+
+ng new user-management-app
+
+
+step 2:-
+
+cd user-management-app
+
+
+
+Generate the necessary components using the Angular CLI:
+
+
+ng generate component registration
+ng generate component login
+ng generate component profile
+
+
+ next step to app.module.ts
+
+
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { RegistrationComponent } from './registration/registration.component';
+import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
+
+const routes: Routes = [
+  { path: 'register', component: RegistrationComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: '', redirectTo: '/register', pathMatch: 'full' },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+
+
+reg comp.ts
+
+
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-registration',
+  templateUrl: './registration.component.html',
+  styleUrls: ['./registration.component.css']
+})
+export class RegistrationComponent {
+  username: string = '';
+  password: string = '';
+
+  constructor(private router: Router) { }
+
+  register(): void {
+    // Perform registration logic here (e.g., call API to register user)
+
+    // Store the registered user data in localStorage
+    const user = {
+      username: this.username,
+      password: this.password
+    };
+    localStorage.setItem('user', JSON.stringify(user));
+
+    // After successful registration, navigate to the login page
+    this.router.navigate(['/login']);
+  }
+}
+
+
+
+
+registration.component.html
+
+
+
+
+<h2>Registration</h2>
+<div>
+  <label>Username:</label>
+  <input type="text" [(ngModel)]="username" />
+</div>
+<div>
+  <label>Password:</label>
+  <input type="password" [(ngModel)]="password" />
+</div>
+<button (click)="register()">Register</button>
+
+
+
+login.component.ts
+
+
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent {
+  username: string = '';
+  password: string = '';
+
+  constructor(private router: Router) { }
+
+  login(): void {
+    // Perform login logic here (e.g., call API to authenticate user)
+
+    // Retrieve the registered user data from localStorage
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      this.username = user.username;
+      this.password = user.password;
+    }
+
+    // After successful login, navigate to the profile page
+    this.router.navigate(['/profile']);
+  }
+}
+
+
+
+
+login.component.html
+
+
+
+<h2>Login</h2>
+<div>
+  <label>Username:</label>
+  <input type="text" [(ngModel)]="username" />
+</div>
+<div>
+  <label>Password:</label>
+  <input type="password" [(ngModel)]="password" />
+</div>
+<button (click)="login()">Login</button>
+
+
+
+
+profile.component.ts
+
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
+})
+export class ProfileComponent {
+  username: string = '';
+  password: string = '';
+
+  constructor() {
+    // Retrieve the registered user data from localStorage
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      this.username = user.username;
+      this.password = user.password;
+    }
+  }
+}
+
+
+
+
+profile.component.html
+
+
+
+<h2>Profile</h2>
+<div>
+  <label>Username:</label>
+  <span>{{ username }}</span>
+</div>
+<div>
+  <label>Password:</label>
+  <span>{{ password }}</span>
+</div>
+
+
+
+
+app.component.html
+
+
+<router-outlet></router-outlet>
+
+
+
+ng serve
+
+
+
+
+
+
+
+
+
+
+
